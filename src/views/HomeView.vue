@@ -20,12 +20,7 @@ export default {
 
   methods: {
     startStop() {
-      if (this.timerRunning) {
-        // currently running, need to stop
-        this.stopTimer();
-      } else {
-        this.startTimer();
-      }
+      this.timerRunning ? this.stopTimer() : this.startTimer();
       this.timerRunning = !this.timerRunning;
     },
     startTimer() {
