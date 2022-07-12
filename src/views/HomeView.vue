@@ -2,6 +2,21 @@
   <div class="container">
     {{ formatTime(this.timerValue) }}
     <button @click="startStop()">Start / Stop</button>
+
+    <!-- <button @click=""></button> -->
+    Create custom timer:
+    <form>
+      <div>
+        Work Timer:
+        <input
+          type="text"
+          placeholder="Enter custom time here"
+          v-model="newTimerValue"
+          @keyup.enter="setTime(newTimerValue)"
+        />
+        <input v-show="hidden" v-model="newTimerValue" />
+      </div>
+    </form>
   </div>
 </template>
 
@@ -14,6 +29,7 @@ export default {
     return {
       timerRunning: false,
       timerValue: 50 * 60,
+      newTimerValue: null,
       timer: 0,
     };
   },
@@ -34,6 +50,10 @@ export default {
       if (this.timerValue == 0) {
         this.alertUser();
       }
+    },
+    setTime(minutes) {
+      this.timerValue = minutes * 60;
+      this.newTimerValue = null;
     },
     alertUser() {
       // make a noise here
