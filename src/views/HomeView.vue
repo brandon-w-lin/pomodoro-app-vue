@@ -3,27 +3,32 @@
     <div id="timerContainer">
       <div>
         <div v-if="displayWorkTime > 0">
-          Work
+          <h1>Work</h1>
           <div class="timer">
             {{ formatTime(this.displayWorkTime) }}
           </div>
         </div>
         <div v-else>
-          Break
+          <h1>Break</h1>
           <div class="timer">
             {{ formatTime(this.displayBreakTime) }}
           </div>
         </div>
       </div>
-      <div class="row"><button @click="startStop()">Start / Stop</button></div>
-      <div class="row"><button @click="reset()">Reset</button></div>
-      <div id="preset-container">
+      <div class="row">
+        <button id="start-stop" class="button" @click="startStop()">
+          {{ this.timerRunning ? "Stop" : "Start" }}
+        </button>
+        <button id="reset" class="button" @click="reset()">Reset</button>
+      </div>
+      <div class="row">
         <div>
           <button
             @click="
               setTime('work', 50);
               setTime('break', 10);
             "
+            class="button"
           >
             50 / 10
           </button>
@@ -34,6 +39,7 @@
               setTime('work', 45);
               setTime('break', 15);
             "
+            class="button"
           >
             45 / 15
           </button>
@@ -44,6 +50,7 @@
               setTime('work', 25);
               setTime('break', 5);
             "
+            class="button"
           >
             25 / 5
           </button>
@@ -164,17 +171,35 @@ export default {
   display: flex;
   height: 90vh;
 }
+
 #timerContainer {
   text-align: center;
   margin: auto;
   font-family: "Courier New", Courier, monospace;
 }
+
 .timer {
   font-size: 10vh;
 }
 
-#preset-container {
+.row {
   display: flex;
   justify-content: center;
+}
+
+.button {
+  background-color: var(--color2);
+  border: solid;
+  border-color: var(--color4);
+  color: var(--color4);
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: 0.2rem;
+  font-size: 1.5vh;
+}
+
+#start-stop {
+  background-color: var(--color2);
+  border-color: var(--color4);
 }
 </style>
