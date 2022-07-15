@@ -1,6 +1,13 @@
 <template>
   <div class="container">
-    {{ formatTime(this.timerValue) }}
+    <div>Work timer:</div>
+    <div>
+      {{ formatTime(this.workTimerValue) }}
+    </div>
+    <div>Break timer:</div>
+    <div>
+      {{ formatTime(this.breakTimerValue) }}
+    </div>
     <button @click="startStop()">Start / Stop</button>
 
     <!-- <button @click=""></button> -->
@@ -11,10 +18,20 @@
         <input
           type="text"
           placeholder="Enter custom time here"
-          v-model="newTimerValue"
-          @keyup.enter="setTime(newTimerValue)"
+          v-model="newWorkTimerValue"
+          @keyup.enter="setTime('work', newWorkTimerValue)"
         />
-        <input v-show="hidden" v-model="newTimerValue" />
+        <input v-show="hidden" v-model="newWorkTimerValue" />
+      </div>
+      <div>
+        Break Timer:
+        <input
+          type="text"
+          placeholder="Enter custom time here"
+          v-model="newBreakTimerValue"
+          @keyup.enter="setTime('break', newBreakTimerValue)"
+        />
+        <input v-show="hidden" v-model="newBreakTimerValue" />
       </div>
     </form>
   </div>
@@ -28,8 +45,10 @@ export default {
   data() {
     return {
       timerRunning: false,
-      timerValue: 50 * 60,
-      newTimerValue: null,
+      workTimerValue: 50 * 60,
+      newWorkTimerValue: null,
+      breakTimerValue: 10 * 60,
+      newBreakTimerValue: null,
       timer: 0,
     };
   },
@@ -46,14 +65,21 @@ export default {
       clearInterval(this.timer);
     },
     handleTimer() {
-      this.timerValue = this.timerValue > 0 ? this.timerValue - 1 : 0;
-      if (this.timerValue == 0) {
-        this.alertUser();
+      this.workTimerValue =
+        this.workTimerValue > 0 ? this.workTimerValue - 1 : 0;
+      if (this.workTimerValue == 0) {
+        this.breakTimerValue =
+          this.breakTimerValue > 0 ? this.breakTimerValue - 1 : 0;
       }
     },
-    setTime(minutes) {
-      this.timerValue = minutes * 60;
-      this.newTimerValue = null;
+    setTime(timer, minutes) {
+      if (timer == "work") {
+        this.workTimerValue = minutes * 60;
+        this.newWorkTimerValue = null;
+      } else if (timer == "break") {
+        this.breakTimerValue = minutes * 60;
+        this.newBreakTimerValue = null;
+      }
     },
     alertUser() {
       // make a noise here
@@ -64,16 +90,14 @@ export default {
       var minutes = dateObj.getUTCMinutes();
       var seconds = dateObj.getSeconds();
 
-      var o1 = input_seconds > 3600 ? hours.toString().padStart(2, "0") + ":" : "";
-      var o2 = minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
+      var o1 =
+        input_seconds > 3600 ? hours.toString().padStart(2, "0") + ":" : "";
+      var o2 =
+        minutes.toString().padStart(2, "0") +
+        ":" +
+        seconds.toString().padStart(2, "0");
       return o1 + o2;
     },
   },
 };
-
-// Documentation:
-// Keep track of timer state in variable timerRunning
-// toggle timer with toggleTimer
-// while toggleTimer, run interval to decrease time
-// watcher to make noise when timer hits zero
 </script>
