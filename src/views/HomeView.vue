@@ -21,7 +21,6 @@
         </button>
         <button id="reset" class="button" @click="reset()">Reset</button>
       </div>
-      <button @click="alertUser()">play bell sound</button>
       <div class="row">
         <div>
           <button
@@ -57,7 +56,7 @@
           </button>
         </div>
       </div>
-      <form>
+      <!-- <form>
         <div>
           Work Timer:
           <input
@@ -78,7 +77,7 @@
           />
           <input v-show="hidden" v-model="newBreakTime" />
         </div>
-      </form>
+      </form> -->
     </div>
   </div>
 </template>
@@ -160,12 +159,6 @@ export default {
       this.displayBreakTime = this.BreakTime;
     },
     alertUser() {
-      // make a noise here
-      // let bellsound = new Audio(
-      //   "https://cdn.freesound.org/previews/66/66952_634166-lq.mp3"
-      // );
-
-      // bellsound.play();
       this.bellSound.play();
     },
     formatTime(input_seconds) {
