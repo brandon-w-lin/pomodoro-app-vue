@@ -21,6 +21,7 @@
         </button>
         <button id="reset" class="button" @click="reset()">Reset</button>
       </div>
+      <button @click="alertUser()">play bell sound</button>
       <div class="row">
         <div>
           <button
@@ -106,19 +107,24 @@ export default {
 
       // holds interval
       timer: 0,
+
+      bellSound: new Audio(
+        "https://cdn.freesound.org/previews/66/66952_634166-lq.mp3"
+      ),
     };
   },
 
   methods: {
     startStop() {
       this.timerRunning ? this.stopTimer() : this.startTimer();
-      this.timerRunning = !this.timerRunning;
     },
     startTimer() {
       this.timer = setInterval(this.handleTimer, 1000);
+      this.timerRunning = !this.timerRunning;
     },
     stopTimer() {
       clearInterval(this.timer);
+      this.timerRunning = !this.timerRunning;
     },
     handleTimer() {
       this.elapsedTime = this.elapsedTime + 1;
@@ -127,6 +133,13 @@ export default {
         this.breakTime,
         this.breakTime + this.workTime - this.elapsedTime
       );
+      if (this.elapsedTime == this.workTime) {
+        this.alertUser();
+      }
+      if (this.elapsedTime == this.workTime + this.breakTime) {
+        this.alertUser();
+        this.reset();
+      }
     },
     setTime(timer, minutes) {
       if (timer == "work") {
@@ -140,6 +153,7 @@ export default {
       }
     },
     reset() {
+      console.log("Call to: reset");
       this.elapsedTime = 0;
       this.stopTimer();
       this.displayWorkTime = this.workTime;
@@ -147,6 +161,12 @@ export default {
     },
     alertUser() {
       // make a noise here
+      // let bellsound = new Audio(
+      //   "https://cdn.freesound.org/previews/66/66952_634166-lq.mp3"
+      // );
+
+      // bellsound.play();
+      this.bellSound.play();
     },
     formatTime(input_seconds) {
       var dateObj = new Date(Math.floor(input_seconds * 1000));
@@ -179,7 +199,7 @@ export default {
 }
 
 .timer {
-  font-size: 10vh;
+  font-size: max(4rem, 12vh);
 }
 
 .row {
@@ -195,7 +215,7 @@ export default {
   padding: 1rem;
   margin: 0.5rem;
   border-radius: 0.2rem;
-  font-size: 1.5vh;
+  font-size: max(1rem, 3vh);
 }
 
 #start-stop {
