@@ -1,15 +1,50 @@
 <template>
   <div class="container">
+    <div id="timer">
+      <div class="row m-5">timer</div>
+      <div class="row">start/stop button</div>
+      <div class="row">
+        <div class="col">
+          <button
+            @click="
+              setTime('work', 50);
+              setTime('break', 10);
+            "
+          >
+            50 / 10
+          </button>
+        </div>
+        <div class="col">
+          <button
+            @click="
+              setTime('work', 45);
+              setTime('break', 15);
+            "
+          >
+            45 / 15
+          </button>
+        </div>
+        <div class="col">
+          <button
+            @click="
+              setTime('work', 25);
+              setTime('break', 5);
+            "
+          >
+            25 / 5
+          </button>
+        </div>
+      </div>
+    </div>
     <div>Work timer:</div>
     <div>
-      {{ formatTime(this.workTimerValue) }}
+      {{ formatTime(this.displayWorkTime) }}
     </div>
     <div>Break timer:</div>
     <div>
-      {{ formatTime(this.breakTimerValue) }}
+      {{ formatTime(this.displayBreakTime) }}
     </div>
     <button @click="startStop()">Start / Stop</button>
-
     <!-- <button @click=""></button> -->
     Create custom timer:
     <form>
@@ -18,20 +53,20 @@
         <input
           type="text"
           placeholder="Enter custom time here"
-          v-model="newWorkTimerValue"
-          @keyup.enter="setTime('work', newWorkTimerValue)"
+          v-model="newWorkTime"
+          @keyup.enter="setTime('work', newWorkTime)"
         />
-        <input v-show="hidden" v-model="newWorkTimerValue" />
+        <input v-show="hidden" v-model="newWorkTime" />
       </div>
       <div>
         Break Timer:
         <input
           type="text"
           placeholder="Enter custom time here"
-          v-model="newBreakTimerValue"
-          @keyup.enter="setTime('break', newBreakTimerValue)"
+          v-model="newBreakTime"
+          @keyup.enter="setTime('break', newBreakTime)"
         />
-        <input v-show="hidden" v-model="newBreakTimerValue" />
+        <input v-show="hidden" v-model="newBreakTime" />
       </div>
     </form>
   </div>
@@ -45,10 +80,21 @@ export default {
   data() {
     return {
       timerRunning: false,
-      workTimerValue: 50 * 60,
-      newWorkTimerValue: null,
-      breakTimerValue: 10 * 60,
-      newBreakTimerValue: null,
+
+      // For logic
+      elapsedTime: 0,
+      workTime: 50 * 60,
+      breakTime: 10 * 60,
+
+      // For display
+      displayWorkTime: 50 * 60,
+      displayBreakTime: 10 * 60,
+
+      // For accepting user input
+      newWorkTime: null,
+      newBreakTime: null,
+
+      // holds interval
       timer: 0,
     };
   },
@@ -65,20 +111,22 @@ export default {
       clearInterval(this.timer);
     },
     handleTimer() {
-      this.workTimerValue =
-        this.workTimerValue > 0 ? this.workTimerValue - 1 : 0;
-      if (this.workTimerValue == 0) {
-        this.breakTimerValue =
-          this.breakTimerValue > 0 ? this.breakTimerValue - 1 : 0;
-      }
+      this.elapsedTime = this.elapsedTime + 1;
+      this.displayWorkTime = Math.max(0, this.workTime - this.elapsedTime);
+      this.displayBreakTime = Math.min(
+        this.breakTime,
+        this.breakTime + this.workTime - this.elapsedTime
+      );
     },
     setTime(timer, minutes) {
       if (timer == "work") {
-        this.workTimerValue = minutes * 60;
-        this.newWorkTimerValue = null;
+        this.workTime = minutes * 60;
+        this.displayWorkTime = this.workTime;
+        this.newWorkTime = null;
       } else if (timer == "break") {
-        this.breakTimerValue = minutes * 60;
-        this.newBreakTimerValue = null;
+        this.breakTime = minutes * 60;
+        this.displayBreakTime = this.breakTime;
+        this.newBreakTime = null;
       }
     },
     alertUser() {
@@ -101,3 +149,13 @@ export default {
   },
 };
 </script>
+
+<style>
+#timer {
+  border: solid;
+  /* display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; */
+}
+</style>
