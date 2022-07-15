@@ -1,10 +1,24 @@
 <template>
   <div class="container">
-    <div id="timer">
-      <div class="row m-5">timer</div>
-      <div class="row">start/stop button</div>
-      <div class="row">
-        <div class="col">
+    <div id="timerContainer">
+      <div>
+        <div v-if="displayWorkTime > 0">
+          Work
+          <div class="timer">
+            {{ formatTime(this.displayWorkTime) }}
+          </div>
+        </div>
+        <div v-else>
+          Break
+          <div class="timer">
+            {{ formatTime(this.displayBreakTime) }}
+          </div>
+        </div>
+      </div>
+      <div class="row"><button @click="startStop()">Start / Stop</button></div>
+      <div class="row"><button @click="reset()">Reset</button></div>
+      <div id="preset-container">
+        <div>
           <button
             @click="
               setTime('work', 50);
@@ -14,7 +28,7 @@
             50 / 10
           </button>
         </div>
-        <div class="col">
+        <div>
           <button
             @click="
               setTime('work', 45);
@@ -24,7 +38,7 @@
             45 / 15
           </button>
         </div>
-        <div class="col">
+        <div>
           <button
             @click="
               setTime('work', 25);
@@ -35,40 +49,29 @@
           </button>
         </div>
       </div>
+      <form>
+        <div>
+          Work Timer:
+          <input
+            type="text"
+            placeholder="Enter custom time here"
+            v-model="newWorkTime"
+            @keyup.enter="setTime('work', newWorkTime)"
+          />
+          <input v-show="hidden" v-model="newWorkTime" />
+        </div>
+        <div>
+          Break Timer:
+          <input
+            type="text"
+            placeholder="Enter custom time here"
+            v-model="newBreakTime"
+            @keyup.enter="setTime('break', newBreakTime)"
+          />
+          <input v-show="hidden" v-model="newBreakTime" />
+        </div>
+      </form>
     </div>
-    <div>Work timer:</div>
-    <div>
-      {{ formatTime(this.displayWorkTime) }}
-    </div>
-    <div>Break timer:</div>
-    <div>
-      {{ formatTime(this.displayBreakTime) }}
-    </div>
-    <button @click="startStop()">Start / Stop</button>
-    <!-- <button @click=""></button> -->
-    Create custom timer:
-    <form>
-      <div>
-        Work Timer:
-        <input
-          type="text"
-          placeholder="Enter custom time here"
-          v-model="newWorkTime"
-          @keyup.enter="setTime('work', newWorkTime)"
-        />
-        <input v-show="hidden" v-model="newWorkTime" />
-      </div>
-      <div>
-        Break Timer:
-        <input
-          type="text"
-          placeholder="Enter custom time here"
-          v-model="newBreakTime"
-          @keyup.enter="setTime('break', newBreakTime)"
-        />
-        <input v-show="hidden" v-model="newBreakTime" />
-      </div>
-    </form>
   </div>
 </template>
 
@@ -129,6 +132,12 @@ export default {
         this.newBreakTime = null;
       }
     },
+    reset() {
+      this.elapsedTime = 0;
+      this.stopTimer();
+      this.displayWorkTime = this.workTime;
+      this.displayBreakTime = this.BreakTime;
+    },
     alertUser() {
       // make a noise here
     },
@@ -151,11 +160,21 @@ export default {
 </script>
 
 <style>
-#timer {
-  border: solid;
-  /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; */
+.container {
+  display: flex;
+  height: 90vh;
+}
+#timerContainer {
+  text-align: center;
+  margin: auto;
+  font-family: "Courier New", Courier, monospace;
+}
+.timer {
+  font-size: 10vh;
+}
+
+#preset-container {
+  display: flex;
+  justify-content: center;
 }
 </style>
